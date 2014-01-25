@@ -290,9 +290,10 @@
 					$('#conclusion').hide();
 					$('#output').fadeIn('slow', function() {
 						$('#current-status').delay(500).fadeIn('slow', function() {
-							$('#conclusion').delay(500).fadeIn('fast');
-							$('#messages').delay(500).fadeIn('fast');
-							$('.site-footer').delay(500).fadeIn('fast');
+							$('#conclusion').delay(500).fadeIn('fast', function() {								
+								$('#messages').delay(500).fadeIn('fast');
+								$('.site-footer').delay(500).fadeIn('fast');
+							});
 						});
 					});
 				});
