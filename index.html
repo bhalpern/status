@@ -1,0 +1,417 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta charset="UTF-8">
+	<title>Hosting Status | BradleyHalpern.com</title>
+	<meta name="robots" content="noindex">
+	<link rel="shortcut icon" href="favicon.ico">
+	<meta name="viewport" content="initial-scale=1, width=device-width, maximum-scale=1">
+	<style type="text/css">
+	body {
+		width: 100%;
+		margin: 0;
+		background-color: #f1efed;
+		background: #f1efed url('img/bg.jpg') repeat;
+		font-family: HelveticaNeue-Light,HelveticaNeue,'Helvetica Neue',Tahoma,sans-serif;
+		color: black;
+		line-height: 1.3em;
+		-webkit-font-smoothing: antialiased;
+	}
+	*, *:before, *:after {
+		-moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;
+	}
+	a, a:visited {
+		color: #0b08a4;
+		border-bottom: 1px dotted #0b08a4;
+		text-decoration: none;
+	}
+	a:hover {
+		border-bottom: 1px solid #0b08a4;
+	}
+	.loading {
+		width: 100%;
+		height: 600px;
+		background: url('img/loading.gif') 50% 35% no-repeat;
+	}
+	#top {
+		width: 94%;
+		max-width: 960px;
+		/*height: 75px;*/
+		margin: 0 auto 0 auto;
+	}
+	#top h1 {
+		color: #666;
+	}
+	#top h1 a {
+		color: black;
+		border-bottom: 0px;
+	}
+	#top h2 {
+		float: right;
+		font-size: 1em;
+		margin-top: -2.2em;
+		color: #666;
+	}
+	.page{
+		width: 94%;
+		max-width: 960px;
+		margin: 0 auto 0 auto;
+		overflow: hidden;
+	}
+	#output {
+		display: none;
+		margin-bottom: 1em;
+	}
+	.feature {
+		-moz-box-shadow:    inset 0 0 10px #d9d6c4;
+		-webkit-box-shadow: inset 0 0 10px #d9d6c4;
+		box-shadow:         inset 0 0 10px #d9d6c4;
+		background: #eceadf url('img/ui-bg_fine-grain_10_eceadf_60x60.png') 50% 50% repeat;
+		padding: 1em;
+		-webkit-border-radius: 5px;
+		-moz-border-radius: 5px;
+		border-radius: 5px;
+		margin-top: 4px;
+	}
+	h3 {
+		margin-bottom: 0;
+	}
+	.feature h3 {
+		margin: 0;
+	}
+	.centered {
+		text-align: center;
+	}
+	.ok img, .site-down img, .error img {
+		vertical-align: middle;
+		width: 60px;
+		height: 60px;
+		opacity: 0.7;
+	}
+	.ok span, .site-down span, .error span {
+		position: relative;
+		top: 0.2em;
+		padding-left: 0.4em;
+		display: inline-block;
+		color: #a9a9a9;
+		font-size: 1.5em;
+		line-height: 1.2em;
+	}
+	.site-down span {
+		color: #666;
+	}
+	.message {
+		padding: 0.3em 0.5em;
+		margin-bottom: 1em;
+	}
+	.error {
+		background-color: #ffd9c8;
+		border: 1px solid #f0baa2;
+	}
+	.left-col {
+		width: 50%;
+		float: left;
+		padding-right: 0.5em;
+	}
+	.right-col {
+		width: 50%;
+		float: right;
+		padding-left: 0.5em;
+	}
+	ul.status-list {
+		list-style-type: none;
+		padding: 0px;
+		margin: 0.5em 0;
+	}
+	ul.status-list li.active {
+		background: url('img/active.png') 0px 3px no-repeat;
+		padding-left: 20px;
+		margin-left: 10px;
+		margin-bottom: 0.3em;
+	}
+	ul.status-list li.off {
+		background: url('img/off.png') 0px 3px no-repeat;
+		padding-left: 20px;
+		margin-left: 10px;
+		margin-bottom: 0.3em;
+	}
+	#servers .server .backup {
+		color: #666;
+		font-size: 0.6em;
+		padding: 1px 4px 3px;
+		border: 1px solid #999;
+		display: inline-block;
+		line-height: 1em;
+		position: relative;
+		top: -2px;
+		cursor: help;
+		opacity: 0;
+	}
+	.site-down-message {
+		text-align: center;
+	}
+	.site-footer {
+		width: 94%;
+		max-width: 960px;
+		border-top: 1px solid #d9d6c4;
+		margin: 0 auto 1em auto;
+		margin-bottom: 0.3em;
+		display: none;
+	}
+	.site-footer p {
+		margin: .8em 0 0 0;
+		padding: 0;
+		font-size: 10px;
+		text-align: center;
+	}
+	.clearfix:after {
+		content: ".";
+		display: block;
+		clear: both;
+		visibility: hidden;
+		line-height: 0;
+		height: 0;
+	}
+	</style>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<script type="text/javascript">
+		
+		$( document ).ajaxError(function( event, jqxhr, settings, exception ) {
+			/*if ( settings.url == "ajax/missing.html" ) {
+				$( "div.log" ).text( "Triggered ajaxError handler." );
+			}*/
+			console.log(event);
+			console.log(jqxhr);
+			console.log(settings);
+			console.log(exception);
+		});
+		
+		$(document).ready(function() {
+			function checkStatus(server, callback) {
+				var response = $.ajax({
+					url: 'https://bradleyhalpern.com/hosting/servers/status',
+					dataType: 'jsonp',
+					jsonpCallback: 'call',
+					contentType: "application/json",
+					timeout: 5000,
+					cache: false
+				}).done(function(data) {
+					var response = jQuery.parseJSON(JSON.stringify(data));
+					//console.log(response);
+					
+					if(response.status == 'OK') {
+						// Response format is a-ok
+						if(callback == "paintStatus") {
+							paintStatus(response);
+							checkBackups('', 'paintBackups');
+						} else {
+							repaintStatus(response);
+						}
+					} else {
+						// The server responded, but the feed was invalid
+						paintError(response, response.status, '');
+					}
+				}).fail(function(xhRequest, errorText, thrownError) {
+					//if(xhRequest.status === 0 || xhRequest.status === 'timeout') {
+						//Server did not respond
+						//Other options: 404, 500, parsererror
+						paintError(xhRequest, errorText, thrownError);
+					//} else {
+					//}
+				});
+			}
+			
+			function checkBackups(server, callback) {
+				var response = $.ajax({
+					url: 'https://bradleyhalpern.com/hosting/servers/backups/status',
+					dataType: 'jsonp',
+					jsonpCallback: 'call',
+					contentType: "application/json",
+					timeout: 12000,
+					cache: false
+				}).done(function(data) {
+					var response = jQuery.parseJSON(JSON.stringify(data));
+					//console.log(response);
+					
+					if(response.status == 'OK') {
+						// Response format is a-ok
+						if(callback == "paintBackups") {
+							paintBackups(response);
+						} else {
+							console.log(response);
+						}
+					} else {
+						// The server responded, but the feed was invalid
+						paintBackupsError(response, response.status, '');
+					}
+				}).fail(function(xhRequest, errorText, thrownError) {
+					//if(xhRequest.status === 0 || xhRequest.status === 'timeout') {
+						//Server did not respond
+						//Other options: 404, 500, parsererror
+						paintBackupsError(xhRequest, errorText, thrownError);
+					//} else {
+					//}
+				});
+			}
+			
+			function paintError(xhRequest, errorText, thrownError) {
+				$('.loading').fadeOut('fast', function() {
+					$('#output').append('<div id="site-down" class="centered feature site-down"><h3><img src="img/error.png" alt="" /> <span>Major uh-oh.</span></h3></div><div class="site-down-message"><p>It looks like the main webserver is down. This really isn&rsquo;t supposed to happen. We can&rsquo;t speak to the status of other sites, services, and auxilary servers... they might be operational, but many things rely on the main server.</p><p>We use robust monitoring tools on all servers, so we should already be aware of the problem. Please <a href="mailto:support@bradleyhalpern.com?subject=Site Down">contact us</a> anyway, so we can be in touch with you if we have any questions.</p></div>').fadeIn('fast', function() {$('.site-footer').fadeIn('fast');});
+				});
+			}
+			
+			function paintStatus(data) {
+				
+				// Everything status
+				$('#output').append('<div id="everything-status" class="centered feature '+data.everything.status.toLowerCase()+'"><h3><img src="img/'+data.everything.status.toLowerCase()+'.png" alt="" /> <span>'+data.everything.message+'</span></h3></div>')
+				.append('<div id="current-status"><div class="left-col"><h3>Servers</h3><ul id="servers" class="status-list"></ul></div><div class="right-col"><h3>Services</h3><ul id="services" class="status-list"></ul></div></div><div class="clearfix"></div>');
+				
+				// Servers
+				for(var i=0; i<data.servers.length; i++) {
+					$('#servers').append('<li id="'+data.servers[i].name+'" class="server '+data.servers[i].status+'">'+data.servers[i].name+'</li>');
+				}
+				
+				// Services
+				for(var i=0; i<data.services.length; i++) {
+					$('#services').append('<li id="'+data.services[i].name+'" class="service '+data.services[i].status+'">'+data.services[i].name+'</li>');
+				}
+				
+				// Conclusion
+				$('#output').append('<p id="conclusion" class="centered">That&rsquo;s all we know. If you&rsquo;re seeing an outage that&rsquo;s not reflected here, please contact us via <a href="https://bradleyhalpern.com/hosting">AccountCenter</a>, email, or phone.</p>');
+				
+				// Display page
+				$('.loading').fadeOut('fast', function() {
+					$('.loading').remove();
+					$('#current-status').hide();
+					$('#conclusion').hide();
+					$('#output').fadeIn('slow', function() {
+						$('#current-status').delay(500).fadeIn('slow', function() {
+							$('#conclusion').delay(500).fadeIn('fast');
+							$('.site-footer').delay(500).fadeIn('fast');
+						});
+					});
+				});
+			}
+			
+			function repaintStatus(data) {
+				console.log('Updated '+Date());
+				
+				// If the site was previously down, redraw
+				if($('#site-down').length) {
+					$('.site-down-message').fadeOut('fast');
+					$('#site-down').fadeOut('fast', function() {
+						$('.site-down-message').remove();
+						$('#site-down').remove();
+						$('.page').prepend('<div class="loading">&nbsp;</div>');
+						paintStatus(data);
+						checkBackups('', 'paintBackups');
+						return;
+					});
+				}
+				
+				// Update: Everything status
+				if($('#everything-status').hasClass(data.everything.status.toLowerCase())) {
+					// Already up to date
+				} else {
+					$('#everything-status h3').animate({ opacity: 0 }, 500, function() {
+						$('#everything-status').attr('class', 'centered feature '+data.everything.status.toLowerCase())
+							   .html('<h3><img src="img/'+data.everything.status.toLowerCase()+'.png" alt="" /> <span>'+data.everything.message+'</span></h3>')
+							   .animate({ opacity: 1 }, 800);
+					});
+				}
+								
+				// Update: Servers
+				for(var i=0; i<data.servers.length; i++) {
+					if($('#'+data.servers[i].name).hasClass(data.servers[i].status)) {
+						// Already up to date
+					} else {
+						var status = data.servers[i].status;
+						$('#'+data.servers[i].name).animate({ opacity: 0.1 }, 500, function() {
+							$(this).attr('class', 'server '+status)
+								   .animate({ opacity: 1 }, 800);
+						});
+					}
+				}
+				
+				// Update: Services
+				for(var i=0; i<data.services.length; i++) {
+					if($('#'+data.services[i].name).hasClass(data.services[i].status)) {
+						// Already up to date
+					} else {
+						var status = data.services[i].status;
+						$('#'+data.services[i].name).animate({ opacity: 0.1 }, 500, function() {
+							$(this).attr('class', 'service '+status)
+								   .animate({ opacity: 1 }, 800);
+						});
+					}
+				}
+			}
+			
+			function paintBackups(data) {
+				for(var i=0; i<data.servers.length; i++) {
+					var dates = Array(); // Used for all existing backup dates
+					var formattedDates = Array(); // Same as above, but as strings
+					var backupDate = new Date(); // Used for most recent backup date
+					backupDate.setFullYear(1970,0,1);
+					for(var j=0; j<data.servers[i].dates.length; j++) {
+						// Time approx. to give west coast the correct date (because of GMT-0800)
+						var tempDate = new Date(data.servers[i].dates[j]+'T08:00:00');
+						
+						// Creates an array var dates of all backup dates
+						dates.push(tempDate);
+						formattedDates.push(months[tempDate.getMonth()]+' '+tempDate.getUTCDate());
+						
+						// Sets var backupDate to the most recent backup
+						if(tempDate > backupDate) {
+							backupDate = tempDate;
+						}
+					}
+					$('#'+data.servers[i].name).append(' <abbr class="backup" title="Backups still exist from '+formattedDates.slice(0, -1).join(', ')+', and '+formattedDates.slice(-1)+', but will be deleted soon.">Backed-up: '+months[backupDate.getMonth()]+' '+backupDate.getUTCDate()+'</abbr>');
+				}
+				$('.backup').animate({ opacity: 1 }, 1000);
+			}
+			
+			function paintBackupsError(xhRequest, errorText, thrownError) {
+				$('#output').prepend('<p id="backups-error" class="error message" style="display:none;">Backups data could not be retreived. This probably just means the network is busy right now. Try reloading if you care.</p>');
+				$('#backups-error').slideDown();
+			}
+			
+			function call(data) {
+				
+			}
+			
+			var months = Array('Jan.', 'Feb.', 'Mar.', 'Apr.', 'May', 'June', 'July', 'Aug.', 'Sept.', 'Oct.', 'Nov.', 'Dec.');
+			//$("head", window.parent.document).append('<link rel="shortcut icon" href="/favicon.ico">'); // Not allowed
+			
+			// Init
+			checkStatus('all', 'paintStatus');
+			
+			// Update every 30 seconds
+			setInterval(function() {checkStatus('all', 'repaintStatus');}, 30000);
+		});
+	</script>
+</head>
+<body>
+	<div id="top">
+		<h1><a href="http://bradleyhalpern.com">BradleyHalpern</a></h1>
+		<h2>Hosting Status</h2>
+	</div>
+	
+	<div id="status" class="page">
+		<div class="loading">&nbsp;</div>
+		<div id="output"></div>
+	</div>
+	
+	<div class="site-footer">
+		<p>&copy; 2014 <a href="/contact/" class="contact">Bradley Halpern.</a></p>
+	</div>
+	<div id="preload" style="display: none;">
+		<img src="img/ok.png" alt="" />
+		<img src="img/yes.png" alt="" />
+		<img src="img/no.png" alt="" /> 
+		<img src="img/active.png" alt="" /> 
+		<img src="img/off.png" alt="" /> 
+	</div>
+</body>
+</html>
