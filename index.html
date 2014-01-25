@@ -151,6 +151,9 @@
 	.site-down-message {
 		text-align: center;
 	}
+	#messages {
+		display: none;
+	}
 	.site-footer {
 		width: 94%;
 		max-width: 960px;
@@ -288,6 +291,7 @@
 					$('#output').fadeIn('slow', function() {
 						$('#current-status').delay(500).fadeIn('slow', function() {
 							$('#conclusion').delay(500).fadeIn('fast');
+							$('#messages').delay(500).fadeIn('fast');
 							$('.site-footer').delay(500).fadeIn('fast');
 						});
 					});
@@ -402,6 +406,7 @@
 		<div class="loading">&nbsp;</div>
 		<div id="output"></div>
 		<div id="messages">
+			<hr>
 			<h3>2014 Server Transition Project</h3>
 			<ul>
 				<li>Servers are operational (srv01-srv03, and sql1)</li>
