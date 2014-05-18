@@ -266,7 +266,7 @@
 			
 			function paintError(xhRequest, errorText, thrownError) {
 				$('.loading').fadeOut('fast', function() {
-					$('#output').append('<div id="site-down" class="centered feature site-down"><h3><img src="img/error.png" alt="" /> <span>Major uh-oh.</span></h3></div><div class="site-down-message"><p>It looks like the main webserver is down. This really isn&rsquo;t supposed to happen. We can&rsquo;t speak to the status of other sites, services, and auxilary servers... they might be operational, but many things rely on the main server.</p><p>We use robust monitoring tools on all servers, so we should already be aware of the problem. Please <a href="mailto:support@bradleyhalpern.com?subject=Site Down">contact us</a> anyway, so we can be in touch with you if we have any questions.</p></div>').fadeIn('fast', function() {$('.site-footer').fadeIn('fast');});
+					$('#output').append('<div id="site-down" class="centered feature site-down"><h3><img src="img/error.png" alt="" /> <span>Uh Oh.</span></h3></div><div class="site-down-message"><p>The main server cannot be reached. If you have a slow or unreliable network connection, it could be timing out. Or the server could be offline&mdash; that would be bad. If you&rsquo;re experiencing problems with your application(s), please <a href="mailto:support@bradleyhalpern.com?subject=Site Down">contact us</a> so we can be in touch with you if we have any questions. Rest assured: if there&rsquo;s a problem, we&rsquo;re on it.</p></div>').fadeIn('fast', function() {$('.site-footer').fadeIn('fast');});
 				});
 			}
 			
