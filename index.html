@@ -130,6 +130,12 @@
 		margin-left: 10px;
 		margin-bottom: 0.3em;
 	}
+	ul.status-list li.trouble {
+		background: url('img/trouble.png') 0px 3px no-repeat;
+		padding-left: 20px;
+		margin-left: 10px;
+		margin-bottom: 0.3em;
+	}
 	ul.status-list li.off {
 		background: url('img/off.png') 0px 3px no-repeat;
 		padding-left: 20px;
@@ -150,6 +156,9 @@
 	}
 	.site-down-message {
 		text-align: center;
+	}
+	#messages {
+		display: none;
 	}
 	.site-footer {
 		width: 94%;
@@ -259,7 +268,7 @@
 			
 			function paintError(xhRequest, errorText, thrownError) {
 				$('.loading').fadeOut('fast', function() {
-					$('#output').append('<div id="site-down" class="centered feature site-down"><h3><img src="img/error.png" alt="" /> <span>Major uh-oh.</span></h3></div><div class="site-down-message"><p>It looks like the main webserver is down. This really isn&rsquo;t supposed to happen. We can&rsquo;t speak to the status of other sites, services, and auxilary servers... they might be operational, but many things rely on the main server.</p><p>We use robust monitoring tools on all servers, so we should already be aware of the problem. Please <a href="mailto:support@bradleyhalpern.com?subject=Site Down">contact us</a> anyway, so we can be in touch with you if we have any questions.</p></div>').fadeIn('fast', function() {$('.site-footer').fadeIn('fast');});
+					$('#output').append('<div id="site-down" class="centered feature site-down"><h3><img src="img/error.png" alt="" /> <span>Uh Oh.</span></h3></div><div class="site-down-message"><p>The main server cannot be reached. If you have a slow or unreliable network connection, it could be timing out. Or the server could be offline&mdash; that would be bad. If you&rsquo;re experiencing problems with your application(s), please <a href="mailto:support@bradleyhalpern.com?subject=Site Down">contact us</a> so we can be in touch with you if we have any questions. Rest assured: if there&rsquo;s a problem, we&rsquo;re on it.</p></div>').fadeIn('fast', function() {$('.site-footer').fadeIn('fast');});
 				});
 			}
 			
@@ -289,8 +298,10 @@
 					$('#conclusion').hide();
 					$('#output').fadeIn('slow', function() {
 						$('#current-status').delay(500).fadeIn('slow', function() {
-							$('#conclusion').delay(500).fadeIn('fast');
-							$('.site-footer').delay(500).fadeIn('fast');
+							$('#conclusion').delay(500).fadeIn('fast', function() {								
+								$('#messages').delay(500).fadeIn('fast');
+								$('.site-footer').delay(500).fadeIn('fast');
+							});
 						});
 					});
 				});
@@ -406,6 +417,25 @@
 	<div id="status" class="page">
 		<div class="loading">&nbsp;</div>
 		<div id="output"></div>
+		<div id="messages">
+			<!--<h3>Update from Google</h3>
+			<p>Google&rsquo;s service outages have been resolved and <a href="http://googleblog.blogspot.com/2014/01/todays-outage-for-several-google.html">addressed</a>. Although these outages did not directly affect our services, most every one of you probably uses Google&rsquo;s services.</p>-->
+			<!--<hr>
+			
+			<h3>Managed WordPress</h3>
+			<p>Managed WordPress has been upgraded to delta status, following successful alpha and beta testing. Three primary development objectives remain before launch. Additional details are available to clients in their Managed WordPress dashboard.</p>
+			<hr>
+			<h3>2014 Server Transition Project</h3>
+			<p><i>The server transition project began in October 2014, and is scheduled for an on time completion by March 2014. Upon completion, servers, sites, and processes will be more efficient and safer.</i></p>
+			<ul>
+				<li>Servers are operational (srv01-srv02, and sql1-sql2)</li>
+				<li>Enhanced monitoring, backups, and failover are operational</li>
+				<li>Caching is enabled, but is still being optimized</li>
+				<li>Account management tool migration will begin in mid-Feb</li>
+				<li>Managed WordPress is in release gold, and is powering 5 live sites</li>
+				<li>Beta testing is underway and has no current unresolved bugs</li>
+			</ul>-->
+		</div>
 	</div>
 	
 	<div class="site-footer">
@@ -418,5 +448,15 @@
 		<img src="img/active.png" alt="" /> 
 		<img src="img/off.png" alt="" /> 
 	</div>
+	<script>
+	  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+	
+	  ga('create', 'UA-5171443-1', 'status.bradleyhalpern.com');
+	  ga('set', 'forceSSL', true);
+	  ga('send', 'pageview', '/hosting/status');
+	</script>
 </body>
 </html>
