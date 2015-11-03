@@ -176,7 +176,9 @@
 	</style>
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 	<script type="text/javascript">
-		
+		function makeID(str) {
+			return str.replace(/\s+/g, '-').toLowerCase();
+		}
 		$( document ).ajaxError(function( event, jqxhr, settings, exception ) {
 			/*if ( settings.url == "ajax/missing.html" ) {
 				$( "div.log" ).text( "Triggered ajaxError handler." );
@@ -269,12 +271,12 @@
 				
 				// Servers
 				for(var i=0; i<data.servers.length; i++) {
-					$('#servers').append('<li id="'+data.servers[i].name+'" class="server '+data.servers[i].status+'">'+data.servers[i].name+'</li>');
+					$('#servers').append('<li id="'+makeID(data.servers[i].name)+'" class="server '+data.servers[i].status+'">'+data.servers[i].name+'</li>');
 				}
 				
 				// Services
 				for(var i=0; i<data.services.length; i++) {
-					$('#services').append('<li id="'+data.services[i].name+'" class="service '+data.services[i].status+'">'+data.services[i].name+'</li>');
+					$('#services').append('<li id="'+makeID(data.services[i].name)+'" class="service '+data.services[i].status+'">'+data.services[i].name+'</li>');
 				}
 				
 				// Conclusion
@@ -323,11 +325,11 @@
 								
 				// Update: Servers
 				for(var i=0; i<data.servers.length; i++) {
-					if($('#'+data.servers[i].name).hasClass(data.servers[i].status)) {
+					if($('#'+makeID(data.servers[i].name)).hasClass(data.servers[i].status)) {
 						// Already up to date
 					} else {
 						var status = data.servers[i].status;
-						$('#'+data.servers[i].name).animate({ opacity: 0.1 }, 500, function() {
+						$('#'+makeID(data.servers[i].name)).animate({ opacity: 0.1 }, 500, function() {
 							$(this).attr('class', 'server '+status)
 								   .animate({ opacity: 1 }, 800);
 						});
@@ -336,11 +338,11 @@
 				
 				// Update: Services
 				for(var i=0; i<data.services.length; i++) {
-					if($('#'+data.services[i].name).hasClass(data.services[i].status)) {
+					if($('#'+makeID(data.services[i].name)).hasClass(data.services[i].status)) {
 						// Already up to date
 					} else {
 						var status = data.services[i].status;
-						$('#'+data.services[i].name).animate({ opacity: 0.1 }, 500, function() {
+						$('#'+makeID(data.services[i].name)).animate({ opacity: 0.1 }, 500, function() {
 							$(this).attr('class', 'service '+status)
 								   .animate({ opacity: 1 }, 800);
 						});
@@ -369,6 +371,7 @@
 					}
 					$('#'+data.servers[i].name).append(' <abbr class="backup" title="Backups still exist from '+formattedDates.slice(0, -1).join(', ')+', and '+formattedDates.slice(-1)+', but will be deleted soon.">Backed-up: '+months[backupDate.getMonth()]+' '+backupDate.getUTCDate()+'</abbr>');
 				}
+				$('#premium-wordpress').append(' <abbr class="backup" title="This service is backed up daily.">Backed-up: Daily</abbr>');
 				$('.backup').animate({ opacity: 1 }, 1000);
 			}
 			
