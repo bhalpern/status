@@ -195,6 +195,7 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 	<script type="text/javascript">
 		var lastStatus;
+		//Slug-ify
 		function makeID(str) {
 			return str.replace(/\s+/g, '-').toLowerCase();
 		}
@@ -295,6 +296,9 @@
 			function paintStatus(data) {
 				var now = new Date();
 				
+				// Wipe if there's conflicting info in here (shouldn't ever happen because this should be handled by rePaintStatus)
+				if(lastStatus == 'error') $('#bh-status-output').html('');
+				
 				// Everything status
 				$('#output').append('<div id="everything-status" class="centered feature '+data.everything.status.toLowerCase()+'"><h3><img src="img/'+data.everything.status.toLowerCase()+'.png" alt="" /> <span>'+data.everything.message+'</span></h3></div>')
 				.append('<div id="current-status"><div class="left-col"><h3>Servers</h3><ul id="servers" class="status-list"></ul></div><div class="right-col"><h3>Services</h3><ul id="services" class="status-list"></ul></div></div><div class="clearfix"></div>');
@@ -313,7 +317,7 @@
 				$('#output').append('<p id="conclusion" class="centered">That&rsquo;s all we know. If you&rsquo;re seeing an outage that&rsquo;s not reflected here, please contact us via <a href="https://bradleyhalpern.com/hosting">AccountCenter</a>, email, or phone.</p>');
 				
 				//Last checked time
-				$('#output').append('<p id="last-checked">Last checked at: <span id="last-checked-time">'+pad(now.getHours(),2)+':'+pad(now.getMinutes(),2)+':'+pad(now.getSeconds(),2)+'</span></p>');
+				$('#output').append('<p id="last-checked" style="display:none;">Last checked at: <span id="last-checked-time">'+pad(now.getHours(),2)+':'+pad(now.getMinutes(),2)+':'+pad(now.getSeconds(),2)+'</span></p>');
 				
 				// Display page
 				$('.loading').fadeOut('fast', function() {
@@ -324,6 +328,7 @@
 						$('#current-status').delay(500).fadeIn('slow', function() {
 							$('#conclusion').delay(500).fadeIn('fast', function() {								
 								$('#messages').delay(500).fadeIn('fast');
+								$('#last-checked').slideDown();
 								$('.site-footer').delay(500).fadeIn('fast');
 							});
 						});
@@ -413,9 +418,11 @@
 					$('#'+data.servers[i].name).append(' <abbr class="backup" title="Backups still exist from '+formattedDates.slice(0, -1).join(', ')+', and '+formattedDates.slice(-1)+', but will be deleted soon.">Backed-up: '+months[backupDate.getMonth()]+' '+backupDate.getUTCDate()+'</abbr>');
 				}
 				
+				//Premium WP
 				var yd = new Date();
 				yd.setDate(yd.getDate() - 1);
 				$('#premium-wordpress').append(' <abbr class="backup" title="This service is backed up daily and backups are kept for 28 days.">Backed-up: '+months[yd.getMonth()]+' '+yd.getUTCDate()+'</abbr>');
+				
 				$('.backup').animate({ opacity: 1 }, 1000);
 			}
 			
