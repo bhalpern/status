@@ -185,6 +185,7 @@
 	</style>
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 	<script type="text/javascript">
+		var lastStatus;
 		function makeID(str) {
 			return str.replace(/\s+/g, '-').toLowerCase();
 		}
@@ -267,9 +268,17 @@
 			}
 			
 			function paintError(xhRequest, errorText, thrownError) {
+				var now = new Date();
+				if(lastStatus == 'error') {
+					$('#last-checked-time').fadeOut('fast', function() {
+						$('#last-checked-time').html(now.getHours()+':'+now.getMinutes()+':'+now.getSeconds()).fadeIn();
+					});
+				} else {}
 				$('.loading').fadeOut('fast', function() {
-					$('#output').append('<div id="site-down" class="centered feature site-down"><h3><img src="img/error.png" alt="" /> <span>Uh Oh.</span></h3></div><div class="site-down-message"><p>The main server cannot be reached. If you have a slow or unreliable network connection, it could be timing out. Or the server could be offline&mdash; that would be bad. If you&rsquo;re experiencing problems with your application(s), please <a href="mailto:support@bradleyhalpern.com?subject=Site Down">contact us</a> so we can be in touch with you if we have any questions. Rest assured: if there&rsquo;s a problem, we&rsquo;re on it.</p></div>').fadeIn('fast', function() {$('.site-footer').fadeIn('fast');});
+					$('#output').html('<div id="site-down" class="centered feature site-down"><h3><img src="img/error.png" alt="" /> <span>Uh Oh.</span></h3></div><div class="site-down-message"><p>The main server cannot be reached. If you have a slow or unreliable network connection, it could be timing out. Or the server could be offline&mdash; that would be bad. If you&rsquo;re experiencing problems with your application(s), please <a href="mailto:support@bradleyhalpern.com?subject=Site Down">contact us</a> so we can be in touch with you if we have any questions. Rest assured: if there&rsquo;s a problem, we&rsquo;re on it.</p></div>').fadeIn('fast', function() {$('.site-footer').fadeIn('fast');});
+					$('#output').append('<p id="last-checked">Last checked at: <span id="last-checked-time">'+now.getHours()+':'+now.getMinutes()+':'+now.getSeconds()+'</span></p>');
 				});
+				lastStatus = 'error';
 			}
 			
 			function paintStatus(data) {
@@ -305,6 +314,7 @@
 						});
 					});
 				});
+				lastStatus = 'success';
 			}
 			
 			function repaintStatus(data) {
@@ -359,6 +369,7 @@
 						});
 					}
 				}
+				lastStatus = 'success';
 			}
 			
 			function paintBackups(data) {
