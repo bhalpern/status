@@ -385,7 +385,7 @@
 				
 				var yd = new Date();
 				yd.setDate(d.getDate() - 1);
-				$('#premium-wordpress').append(' <abbr class="backup" title="This service is backed up daily and backups are kept for 28 days.">Backed-up: '+yd.getMonth()]+' '+yd.getUTCDate()+'</abbr>');
+				$('#premium-wordpress').append(' <abbr class="backup" title="This service is backed up daily and backups are kept for 28 days.">Backed-up: '+yd.getMonth()+' '+yd.getUTCDate()+'</abbr>');
 				$('.backup').animate({ opacity: 1 }, 1000);
 			}
 			
