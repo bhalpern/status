@@ -160,6 +160,15 @@
 	#messages {
 		display: none;
 	}
+	#last-checked {
+		font-size:10px;
+		color: #666;
+		text-align: center;
+	}
+	#last-checked-time {
+		min-width: 60px;
+		display: inline-block;
+	}
 	.site-footer {
 		width: 94%;
 		max-width: 960px;
@@ -188,6 +197,10 @@
 		var lastStatus;
 		function makeID(str) {
 			return str.replace(/\s+/g, '-').toLowerCase();
+		}
+		//Makes an int (str) length (max) by adding leading zeros
+		function pad(str, max) {
+			return str.length < max ? pad("0" + str, max) : str;
 		}
 		$( document ).ajaxError(function( event, jqxhr, settings, exception ) {
 			/*if ( settings.url == "ajax/missing.html" ) {
@@ -270,18 +283,17 @@
 			function paintError(xhRequest, errorText, thrownError) {
 				var now = new Date();
 				if(lastStatus == 'error') {
-					$('#last-checked-time').fadeOut('fast', function() {
-						$('#last-checked-time').html(now.getHours()+':'+now.getMinutes()+':'+now.getSeconds()).fadeIn();
-					});
+					$('#last-checked-time').hide().html(pad(now.getHours(),2)+':'+pad(now.getMinutes(),2)+':'+pad(now.getSeconds(),2)).fadeIn();
 				} else {}
 				$('.loading').fadeOut('fast', function() {
 					$('#output').html('<div id="site-down" class="centered feature site-down"><h3><img src="img/error.png" alt="" /> <span>Uh Oh.</span></h3></div><div class="site-down-message"><p>The main server cannot be reached. If you have a slow or unreliable network connection, it could be timing out. Or the server could be offline&mdash; that would be bad. If you&rsquo;re experiencing problems with your application(s), please <a href="mailto:support@bradleyhalpern.com?subject=Site Down">contact us</a> so we can be in touch with you if we have any questions. Rest assured: if there&rsquo;s a problem, we&rsquo;re on it.</p></div>').fadeIn('fast', function() {$('.site-footer').fadeIn('fast');});
-					$('#output').append('<p id="last-checked">Last checked at: <span id="last-checked-time">'+now.getHours()+':'+now.getMinutes()+':'+now.getSeconds()+'</span></p>');
+					$('#output').append('<p id="last-checked">Last checked at: <span id="last-checked-time">'+pad(now.getHours(),2)+':'+pad(now.getMinutes(),2)+':'+pad(now.getSeconds(),2)+'</span></p>');
 				});
 				lastStatus = 'error';
 			}
 			
 			function paintStatus(data) {
+				var now = new Date();
 				
 				// Everything status
 				$('#output').append('<div id="everything-status" class="centered feature '+data.everything.status.toLowerCase()+'"><h3><img src="img/'+data.everything.status.toLowerCase()+'.png" alt="" /> <span>'+data.everything.message+'</span></h3></div>')
@@ -299,6 +311,9 @@
 				
 				// Conclusion
 				$('#output').append('<p id="conclusion" class="centered">That&rsquo;s all we know. If you&rsquo;re seeing an outage that&rsquo;s not reflected here, please contact us via <a href="https://bradleyhalpern.com/hosting">AccountCenter</a>, email, or phone.</p>');
+				
+				//Last checked time
+				$('#output').append('<p id="last-checked">Last checked at: <span id="last-checked-time">'+pad(now.getHours(),2)+':'+pad(now.getMinutes(),2)+':'+pad(now.getSeconds(),2)+'</span></p>');
 				
 				// Display page
 				$('.loading').fadeOut('fast', function() {
@@ -319,6 +334,7 @@
 			
 			function repaintStatus(data) {
 				console.log('Updated '+Date());
+				var now = new Date();
 				
 				// If the site was previously down, redraw
 				if($('#site-down').length) {
@@ -369,6 +385,9 @@
 						});
 					}
 				}
+				
+				// Update: Timestamp
+				$('#last-checked-time').hide().html(pad(now.getHours(),2)+':'+pad(now.getMinutes(),2)+':'+pad(now.getSeconds(),2)).fadeIn();
 				lastStatus = 'success';
 			}
 			
