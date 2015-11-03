@@ -201,6 +201,7 @@
 		}
 		//Makes an int (str) length (max) by adding leading zeros
 		function pad(str, max) {
+			if(str<10) str = '0'+str;
 			return str.length < max ? pad("0" + str, max) : str;
 		}
 		$( document ).ajaxError(function( event, jqxhr, settings, exception ) {
