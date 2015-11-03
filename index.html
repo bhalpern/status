@@ -192,7 +192,7 @@
 		height: 0;
 	}
 	</style>
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 	<script type="text/javascript">
 		var lastStatus;
 		function makeID(str) {
@@ -215,7 +215,7 @@
 		$(document).ready(function() {
 			function checkStatus(server, callback) {
 				var response = $.ajax({
-					url: 'https://bradleyhalpern.com/hosting/servers/status',
+					url: '//bradleyhalpern.com/hosting/servers/status',
 					dataType: 'jsonp',
 					jsonpCallback: 'call',
 					contentType: "application/json",
@@ -249,7 +249,7 @@
 			
 			function checkBackups(server, callback) {
 				var response = $.ajax({
-					url: 'https://bradleyhalpern.com/hosting/servers/backups/status',
+					url: '//bradleyhalpern.com/hosting/servers/backups/status',
 					dataType: 'jsonp',
 					jsonpCallback: 'call',
 					contentType: "application/json",
