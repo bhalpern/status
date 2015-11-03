@@ -371,6 +371,7 @@
 					}
 					$('#'+data.servers[i].name).append(' <abbr class="backup" title="Backups still exist from '+formattedDates.slice(0, -1).join(', ')+', and '+formattedDates.slice(-1)+', but will be deleted soon.">Backed-up: '+months[backupDate.getMonth()]+' '+backupDate.getUTCDate()+'</abbr>');
 				}
+				alert('tested');
 				$('#premium-wordpress').append(' <abbr class="backup" title="This service is backed up daily.">Backed-up: Daily</abbr>');
 				$('.backup').animate({ opacity: 1 }, 1000);
 			}
@@ -388,6 +389,7 @@
 			//$("head", window.parent.document).append('<link rel="shortcut icon" href="/favicon.ico">'); // Not allowed
 			
 			// Init
+			alert('ok');
 			checkStatus('all', 'paintStatus');
 			
 			// Update every 30 seconds
